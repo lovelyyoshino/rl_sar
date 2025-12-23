@@ -193,6 +193,7 @@ git clone https://github.com/osrf/gazebo_models.git ~/.gazebo/models
 ```bash
 ./cmake_build/bin/rl_sim_mujoco <ROBOT> <SCENE>
 # Example: ./cmake_build/bin/rl_sim_mujoco g1 scene_29dof
+# Example (23DoF): ./cmake_build/bin/rl_sim_mujoco g1_23 scene_23dof
 ```
 
 ### Control with Mobile Web (Experimental)

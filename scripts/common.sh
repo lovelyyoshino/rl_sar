@@ -82,23 +82,31 @@ is_online() {
     local host="${1:-github.com}"
     local timeout="${2:-3}"
 
-    # Try multiple methods for better compatibility
-    if command -v curl &> /dev/null; then
-        # Use curl with timeout
-        curl --connect-timeout "$timeout" --silent --head "$host" &> /dev/null
-        return $?
-    elif command -v wget &> /dev/null; then
-        # Use wget with timeout
-        wget --timeout="$timeout" --tries=1 --spider --quiet "$host" &> /dev/null
-        return $?
-    elif command -v ping &> /dev/null; then
-        # Fallback to ping (may not work if ICMP is blocked)
-        ping -c 1 -W "$timeout" "$host" &> /dev/null
-        return $?
-    else
-        # No tool available, assume offline to be safe
-        return 1
+    # Prefer system curl over conda-provided versions to avoid option issues
+    local curl_bin=""
+    if [ -x "/usr/bin/curl" ]; then
+        curl_bin="/usr/bin/curl"
+    elif command -v curl &> /dev/null; then
+        curl_bin="$(command -v curl)"
     fi
+
+    # Try curl first if available
+    if [ -n "$curl_bin" ]; then
+        "$curl_bin" --connect-timeout "$timeout" --silent --head "https://${host}" &> /dev/null && return 0
+    fi
+
+    # Fallback to wget
+    if command -v wget &> /dev/null; then
+        wget --timeout="$timeout" --tries=1 --spider --quiet "https://${host}" &> /dev/null && return 0
+    fi
+
+    # Fallback to ping (may fail if ICMP blocked)
+    if command -v ping &> /dev/null; then
+        ping -c 1 -W "$timeout" "$host" &> /dev/null && return 0
+    fi
+
+    # No tool succeeded
+    return 1
 }
 
 # Check network with user feedback

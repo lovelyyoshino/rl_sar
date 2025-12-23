@@ -1,0 +1,174 @@
+# Copyright (c) 2024-2025 Ziqi Fan
+# SPDX-License-Identifier: Apache-2.0
+
+g1_23:
+  dt: 0.005
+  decimation: 4
+
+  # 23DoF (G1 23dof URDF): legs(12) + waist_yaw(1) + arms(10, include wrist_roll only)
+  num_of_dofs: 23
+  wheel_indices: []
+
+  # NOTE: The joint order here is aligned to robot_lab unitree_g1 rough_env_cfg.py (23DoF),
+  # with name mapping:
+  #   torso_joint -> waist_yaw_joint
+  #   left/right_elbow_pitch_joint -> left/right_elbow_joint
+  #   left/right_elbow_roll_joint  -> left/right_wrist_roll_joint
+  joint_names:
+    - left_hip_pitch_joint
+    - left_hip_roll_joint
+    - left_hip_yaw_joint
+    - left_knee_joint
+    - left_ankle_pitch_joint
+    - left_ankle_roll_joint
+    - right_hip_pitch_joint
+    - right_hip_roll_joint
+    - right_hip_yaw_joint
+    - right_knee_joint
+    - right_ankle_pitch_joint
+    - right_ankle_roll_joint
+    - waist_yaw_joint
+    - left_shoulder_pitch_joint
+    - left_shoulder_roll_joint
+    - left_shoulder_yaw_joint
+    - left_elbow_joint
+    - left_wrist_roll_joint
+    - right_shoulder_pitch_joint
+    - right_shoulder_roll_joint
+    - right_shoulder_yaw_joint
+    - right_elbow_joint
+    - right_wrist_roll_joint
+
+  joint_controller_names:
+    - left_hip_pitch_controller
+    - left_hip_roll_controller
+    - left_hip_yaw_controller
+    - left_knee_controller
+    - left_ankle_pitch_controller
+    - left_ankle_roll_controller
+    - right_hip_pitch_controller
+    - right_hip_roll_controller
+    - right_hip_yaw_controller
+    - right_knee_controller
+    - right_ankle_pitch_controller
+    - right_ankle_roll_controller
+    - waist_yaw_controller
+    - left_shoulder_pitch_controller
+    - left_shoulder_roll_controller
+    - left_shoulder_yaw_controller
+    - left_elbow_controller
+    - left_wrist_roll_controller
+    - right_shoulder_pitch_controller
+    - right_shoulder_roll_controller
+    - right_shoulder_yaw_controller
+    - right_elbow_controller
+    - right_wrist_roll_controller
+
+  # Identity mapping for ROS controllers when joint order is preserved.
+  joint_mapping: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
+
+  # Default pose (critical): align with IsaacLab G1 init_state.joint_pos used in training.
+  # Source: IsaacLab isaaclab_assets/robots/unitree.py (G1_CFG.init_state.joint_pos)
+  default_dof_pos:
+    - -0.20  # left_hip_pitch_joint
+    - 0.0    # left_hip_roll_joint
+    - 0.0    # left_hip_yaw_joint
+    - 0.42   # left_knee_joint
+    - -0.23  # left_ankle_pitch_joint
+    - 0.0    # left_ankle_roll_joint
+    - -0.20  # right_hip_pitch_joint
+    - 0.0    # right_hip_roll_joint
+    - 0.0    # right_hip_yaw_joint
+    - 0.42   # right_knee_joint
+    - -0.23  # right_ankle_pitch_joint
+    - 0.0    # right_ankle_roll_joint
+    - 0.0    # waist_yaw_joint (torso_joint in IsaacLab)
+    - 0.35   # left_shoulder_pitch_joint
+    - 0.16   # left_shoulder_roll_joint
+    - 0.0    # left_shoulder_yaw_joint
+    - 0.87   # left_elbow_joint (elbow_pitch in IsaacLab)
+    - 0.0    # left_wrist_roll_joint (elbow_roll in IsaacLab)
+    - 0.35   # right_shoulder_pitch_joint
+    - -0.16  # right_shoulder_roll_joint
+    - 0.0    # right_shoulder_yaw_joint
+    - 0.87   # right_elbow_joint (elbow_pitch in IsaacLab)
+    - 0.0    # right_wrist_roll_joint (elbow_roll in IsaacLab)
+
+  # Gains for fixed posture transitions (get up/down).
+  # Use values aligned to IsaacLab actuators to avoid sim2sim mismatch during transitions.
+  fixed_kp:
+    - 200.0
+    - 150.0
+    - 150.0
+    - 200.0
+    - 20.0
+    - 20.0
+    - 200.0
+    - 150.0
+    - 150.0
+    - 200.0
+    - 20.0
+    - 20.0
+    - 200.0
+    - 40.0
+    - 40.0
+    - 40.0
+    - 40.0
+    - 40.0
+    - 40.0
+    - 40.0
+    - 40.0
+    - 40.0
+    - 40.0
+
+  fixed_kd:
+    - 5.0
+    - 5.0
+    - 5.0
+    - 5.0
+    - 2.0
+    - 2.0
+    - 5.0
+    - 5.0
+    - 5.0
+    - 5.0
+    - 2.0
+    - 2.0
+    - 5.0
+    - 10.0
+    - 10.0
+    - 10.0
+    - 10.0
+    - 10.0
+    - 10.0
+    - 10.0
+    - 10.0
+    - 10.0
+    - 10.0
+
+  # Torque limits: align to IsaacLab effort_limit_sim (feet are 20, others 300).
+  torque_limits:
+    - 300.0
+    - 300.0
+    - 300.0
+    - 300.0
+    - 20.0
+    - 20.0
+    - 300.0
+    - 300.0
+    - 300.0
+    - 300.0
+    - 20.0
+    - 20.0
+    - 300.0
+    - 300.0
+    - 300.0
+    - 300.0
+    - 300.0
+    - 300.0
+    - 300.0
+    - 300.0
+    - 300.0
+    - 300.0
+    - 300.0
+

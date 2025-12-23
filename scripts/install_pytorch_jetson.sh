@@ -144,7 +144,7 @@ install_pytorch_jetson() {
     # Download PyTorch wheel
     print_info "Downloading PyTorch wheel (this may take several minutes)..."
     if command -v curl &> /dev/null; then
-        curl -L --progress-bar -o "${wheel_path}" "${wheel_url}" || {
+        curl -L -o "${wheel_path}" "${wheel_url}" || {
             print_error "Failed to download PyTorch wheel"
             rm -f "${wheel_path}"
             return 1

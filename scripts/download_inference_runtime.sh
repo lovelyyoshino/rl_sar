@@ -18,6 +18,32 @@ cd "$PROJECT_ROOT"
 # Load common utilities
 source "${SCRIPT_DIR}/common.sh"
 
+# Function to find a suitable download tool
+# Prefer system curl/wget over conda/anaconda versions
+find_download_tool() {
+    # Try system curl first (usually in /usr/bin)
+    if [ -x "/usr/bin/curl" ]; then
+        echo "/usr/bin/curl"
+        return 0
+    fi
+    # Try system wget
+    if [ -x "/usr/bin/wget" ]; then
+        echo "/usr/bin/wget"
+        return 0
+    fi
+    # Fall back to PATH curl
+    if command -v curl &> /dev/null; then
+        echo "curl"
+        return 0
+    fi
+    # Fall back to PATH wget
+    if command -v wget &> /dev/null; then
+        echo "wget"
+        return 0
+    fi
+    return 1
+}
+
 # Detect platform and architecture
 OS_TYPE="$(uname -s)"
 ARCH_TYPE="$(uname -m)"
@@ -123,21 +149,27 @@ download_libtorch() {
     print_info "Platform: ${OS_TYPE} (${ARCH_TYPE})"
     print_info "URL: ${url}"
 
-    # Download
-    if command -v curl &> /dev/null; then
-        curl -L --progress-bar -o "${archive_path}" "${url}" || {
+    # Download using the best available tool
+    local download_tool=$(find_download_tool)
+    if [ -z "$download_tool" ]; then
+        print_error "curl or wget is required to download files"
+        exit 1
+    fi
+    
+    if [[ "$download_tool" == *"curl"* ]]; then
+        "$download_tool" -L -o "${archive_path}" "${url}" || {
             print_error "Download failed"
             rm -f "${archive_path}"
             exit 1
         }
-    elif command -v wget &> /dev/null; then
-        wget --show-progress -O "${archive_path}" "${url}" || {
+    elif [[ "$download_tool" == *"wget"* ]]; then
+        "$download_tool" -O "${archive_path}" "${url}" || {
             print_error "Download failed"
             rm -f "${archive_path}"
             exit 1
         }
     else
-        print_error "curl or wget is required to download files"
+        print_error "Unsupported download tool: $download_tool"
         exit 1
     fi
 
@@ -221,21 +253,27 @@ download_onnxruntime() {
     print_info "Platform: ${OS_TYPE} (${ARCH_TYPE})"
     print_info "URL: ${url}"
 
-    # Download
-    if command -v curl &> /dev/null; then
-        curl -L --progress-bar -o "${archive_path}" "${url}" || {
+    # Download using the best available tool
+    local download_tool=$(find_download_tool)
+    if [ -z "$download_tool" ]; then
+        print_error "curl or wget is required to download files"
+        exit 1
+    fi
+    
+    if [[ "$download_tool" == *"curl"* ]]; then
+        "$download_tool" -L -o "${archive_path}" "${url}" || {
             print_error "Download failed"
             rm -f "${archive_path}"
             exit 1
         }
-    elif command -v wget &> /dev/null; then
-        wget --show-progress -O "${archive_path}" "${url}" || {
+    elif [[ "$download_tool" == *"wget"* ]]; then
+        "$download_tool" -O "${archive_path}" "${url}" || {
             print_error "Download failed"
             rm -f "${archive_path}"
             exit 1
         }
     else
-        print_error "curl or wget is required to download files"
+        print_error "Unsupported download tool: $download_tool"
         exit 1
     fi
 

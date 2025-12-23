@@ -506,4 +506,15 @@ private:
 
 REGISTER_FSM_FACTORY(G1FSMFactory, "RLFSMStatePassive")
 
+// Alias factory for 23DoF G1 configs (e.g. policy/g1_23/*).
+// This allows using `robot_name:=g1_23` in simulation while reusing the same FSM states.
+class G1_23FSMFactory : public G1FSMFactory
+{
+public:
+    using G1FSMFactory::G1FSMFactory;
+    std::string GetType() const override { return "g1_23"; }
+};
+
+REGISTER_FSM_FACTORY(G1_23FSMFactory, "RLFSMStatePassive")
+
 #endif // G1_FSM_HPP

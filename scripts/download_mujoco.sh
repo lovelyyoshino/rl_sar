@@ -130,7 +130,7 @@ download_mujoco() {
             exit 1
         }
     elif command -v curl &> /dev/null; then
-        curl -L --progress-bar "$url" -o "$archive_name" || {
+        curl -L "$url" -o "$archive_name" || {
             print_error "Download failed"
             rm -rf "$temp_dir"
             exit 1
