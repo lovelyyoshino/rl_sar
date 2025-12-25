@@ -366,8 +366,22 @@ void RL_Sim::RobotControl()
 #if defined(USE_ROS1)
 void RL_Sim::ModelStatesCallback(const gazebo_msgs::ModelStates::ConstPtr &msg)
 {
-    this->vel = msg->twist[2];
-    this->pose = msg->pose[2];
+    // Find the index of the robot model by name
+    int model_index = -1;
+    for (size_t i = 0; i < msg->name.size(); ++i)
+    {
+        if (msg->name[i] == this->gazebo_model_name)
+        {
+            model_index = i;
+            break;
+        }
+    }
+
+    if (model_index >= 0)
+    {
+        this->vel = msg->twist[model_index];
+        this->pose = msg->pose[model_index];
+    }
 }
 #elif defined(USE_ROS2)
 void RL_Sim::GazeboImuCallback(const sensor_msgs::msg::Imu::SharedPtr msg)

@@ -484,10 +484,10 @@ int main(int argc, char** argv)
         std::cout << std::endl;
         std::cout << "Examples:" << std::endl;
         std::cout << "  # Test torch model with direct API, 30 iterations" << std::endl;
-        std::cout << "  " << argv[0] << " policy/go2/himloco/himloco.pt torch 0 270 30" << std::endl;
+        std::cout << "  " << argv[0] << " policy/go2/robot_lab/policy.pt torch 0 270 30" << std::endl;
         std::cout << std::endl;
         std::cout << "  # Test torch model with abstraction layer, continuous mode" << std::endl;
-        std::cout << "  " << argv[0] << " policy/go2/himloco/himloco.pt torch 1 270 0" << std::endl;
+        std::cout << "  " << argv[0] << " policy/go2/robot_lab/policy.pt torch 1 270 0" << std::endl;
         std::cout << std::endl;
         std::cout << "  # Test ONNX model with direct API, 100 iterations" << std::endl;
         std::cout << "  " << argv[0] << " policy/tita/robot_lab/policy.onnx onnx 0 270 100" << std::endl;

@@ -328,7 +328,7 @@ if __name__ == "__main__":
         print("Usage: python convert_policy.py <model_file_path>")
         print()
         print("Examples:")
-        print("  python convert_policy.py policy/go2/himloco/himloco.pt")
+        print("  python convert_policy.py policy/go2/robot_lab/policy.pt")
         print()
         print("Supported formats:")
         print("  .pt   → auto convert to .onnx")

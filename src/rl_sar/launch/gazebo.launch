@@ -31,8 +31,24 @@
 
     <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
     <!-- Set trunk and joint positions at startup -->
-    <node pkg="gazebo_ros" type="spawn_model" name="urdf_spawner" respawn="false" output="screen"
-          args="-urdf -z 1.0 -model $(arg rname)_gazebo -param robot_description"/>
+    <!-- Default spawn args (no initial joint positions) -->
+    <arg name="spawn_args" default="-urdf -z 1.0 -model $(arg rname)_gazebo -param robot_description"/>
+
+    <!-- D1 robot: spawn with initial joint positions to prevent falling -->
+    <group if="$(eval arg('rname') == 'd1')">
+        <node pkg="gazebo_ros" type="spawn_model" name="urdf_spawner" respawn="false" output="screen"
+              args="-urdf -z 0.5 -model $(arg rname)_gazebo -param robot_description
+                    -J FR_ABAD_JOINT 0.0 -J FR_HIP_JOINT 0.8 -J FR_KNEE_JOINT -1.5
+                    -J FL_ABAD_JOINT 0.0 -J FL_HIP_JOINT 0.8 -J FL_KNEE_JOINT -1.5
+                    -J RR_ABAD_JOINT 0.0 -J RR_HIP_JOINT 0.8 -J RR_KNEE_JOINT -1.5
+                    -J RL_ABAD_JOINT 0.0 -J RL_HIP_JOINT 0.8 -J RL_KNEE_JOINT -1.5"/>
+    </group>
+
+    <!-- Other robots: spawn without initial joint positions -->
+    <group unless="$(eval arg('rname') == 'd1')">
+        <node pkg="gazebo_ros" type="spawn_model" name="urdf_spawner" respawn="false" output="screen"
+              args="$(arg spawn_args)"/>
+    </group>
 
     <!-- Load joint controller configurations from YAML file to parameter server -->
     <rosparam file="$(arg dollar)$(arg robot_path)/config/robot_control.yaml" command="load"/>

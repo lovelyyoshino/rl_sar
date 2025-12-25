@@ -38,6 +38,7 @@ Support List:
 |FFTAI-GR1T2 (gr1t2)</br>(Only available on Ubuntu20.04)|legged_gym (IsaacGym)|✅|❌|⚪|
 |zhinao-L4W4 (l4w4)|legged_gym (IsaacGym)|✅|❌|✅|
 |Deeprobotics-Lite3 (lite3)|himloco (IsaacGym)|✅|❌|✅|
+|Agibot-D1 (d1)|robot_lab (IsaacSim)|✅|✅|✅|
 |DDTRobot-Tita (tita)|robot_lab (IsaacSim)|✅|❌|⚪|
 
 > [!IMPORTANT]
@@ -180,6 +181,8 @@ ros2 run rl_sar rl_sim
 ```
 
 > [!TIP]
+> **IMPORTANT:** After launching Gazebo, you must launch `rl_sim` in a separate terminal to control the robot. Without `rl_sim`, the robot will not be controlled and may fall over.
+>
 > If you cannot see the robot after launching Gazebo in Ubuntu 22.04, it means the robot was initialized outside the field of view. The robot's position will be automatically reset after launching rl_sim. If the robot falls over during the standing process, use the keyboard `R` or the gamepad `RB+Y` to reset the robot.
 
 If Gazebo cannot be opened when you start it for the first time, you need to download the model package
@@ -440,7 +443,7 @@ Deeprobotics Lite3 can be connected using wireless method.
 - Then Update **jy_exe/conf/network.toml** on the Lite3 motion host to set the IP and port to that of the local machine running ROS2, enabling communication.
 
 > [!CAUTION]
-> **Recheck joint mapping parameters!<br>Recheck rl_sar/policy/himloco/config.yaml. The default joint mapping in Sim2Sim configuration differs from that used in real. If not updated accordingly, this mismatch may lead to incorrect robot behavior and potential safety hazards**
+> **Recheck joint mapping parameters!<br>Recheck rl_sar/policy/robot_lab/config.yaml. The default joint mapping in Sim2Sim configuration differs from that used in real. If not updated accordingly, this mismatch may lead to incorrect robot behavior and potential safety hazards**
 
 Lite3 also support control using Deeprobotics Retroid gamepad, refer to [Deeprobotics Gamepad](https://github.com/DeepRoboticsLab/gamepad)
 
@@ -457,6 +460,51 @@ ros2 run rl_sar rl_real_lite3
 
 # CMake
 ./cmake_build/bin/rl_real_lite3
+```
+
+</details>
+
+<details>
+
+<summary>Agibot D1 (Click to expand)</summary>
+
+D1 can be connected using wireless network.
+
+- Connect to D1's WiFi (default SSID and password are on the label on the side of the robot)
+- Robot default IP: `192.168.234.1` (WiFi) or `192.168.168.168` (Ethernet)
+- You need to configure `/opt/export/config/sdk_config.yaml` on the robot side, set `target_ip` to your PC's IP
+
+**Network Configuration Steps:**
+
+1. SSH into the robot:
+```bash
+ssh firefly@192.168.234.1  # Password: firefly
+```
+
+2. Modify SDK configuration file:
+```bash
+vim /opt/export/config/sdk_config.yaml
+```
+Change `target_ip` to your PC's IP address (e.g., `192.168.234.2`)
+
+3. Reboot the robot for the configuration to take effect
+
+**Run the control program:**
+
+```bash
+# ROS1
+source devel/setup.bash
+rosrun rl_sar rl_real_d1 [local_ip] [robot_ip]
+
+# ROS2
+source install/setup.bash
+ros2 run rl_sar rl_real_d1 [local_ip] [robot_ip]
+
+# CMake
+./cmake_build/bin/rl_real_d1 [local_ip] [robot_ip]
+
+# Example (using default IP)
+./cmake_build/bin/rl_real_d1 192.168.234.2 192.168.234.1
 ```
 
 </details>
