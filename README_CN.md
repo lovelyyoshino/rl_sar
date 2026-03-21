@@ -38,6 +38,7 @@
 |FFTAI-GR1T2 (gr1t2)</br>(Only available on Ubuntu20.04)|legged_gym (IsaacGym)|✅|❌|⚪|
 |zhinao-L4W4 (l4w4)|legged_gym (IsaacGym)|✅|❌|✅|
 |Deeprobotics-Lite3 (lite3)|himloco (IsaacGym)|✅|❌|✅|
+|Agibot-D1 (d1)|robot_lab (IsaacSim)|✅|✅|✅|
 |DDTRobot-Tita (tita)|robot_lab (IsaacSim)|✅|❌|⚪|
 
 > [!IMPORTANT]
@@ -180,6 +181,8 @@ ros2 run rl_sar rl_sim
 ```
 
 > [!TIP]
+> **重要提示：** 启动Gazebo后，必须在另一个终端中启动`rl_sim`来控制机器人。如果不启动`rl_sim`，机器人将不会被控制，可能会摔倒。
+>
 > Ubuntu22.04中若启动Gazebo后看不到机器人，则是机器人初始化到了视野范围外，启动rl_sim后会自动重置机器人位置。若机器人在站立过程中翻倒，请使用键盘`R`或手柄`RB+Y`重置机器人环境。
 
 如果第一次启动Gazebo无法打开则需要下载模型包
@@ -477,6 +480,51 @@ ros2 run rl_sar rl_real_lite3
 
 # CMake
 ./cmake_build/bin/rl_real_lite3
+```
+
+</details>
+
+<details>
+
+<summary>智元 Agibot D1（点击展开）</summary>
+
+D1通过无线网络进行连接。
+
+- 连接D1的WiFi（默认SSID和密码在机器人侧面标签上）
+- 机器人默认IP: `192.168.234.1` (WiFi) 或 `192.168.168.168` (有线)
+- 需要在机器人端配置 `/opt/export/config/sdk_config.yaml`，将 `target_ip` 设置为你的电脑IP
+
+**网络配置步骤：**
+
+1. SSH登录机器人：
+```bash
+ssh firefly@192.168.234.1  # 密码: firefly
+```
+
+2. 修改SDK配置文件：
+```bash
+vim /opt/export/config/sdk_config.yaml
+```
+将 `target_ip` 修改为你的电脑IP地址（如 `192.168.234.2`）
+
+3. 重启机器人使配置生效
+
+**运行控制程序：**
+
+```bash
+# ROS1
+source devel/setup.bash
+rosrun rl_sar rl_real_d1 [本地IP] [机器人IP]
+
+# ROS2
+source install/setup.bash
+ros2 run rl_sar rl_real_d1 [本地IP] [机器人IP]
+
+# CMake
+./cmake_build/bin/rl_real_d1 [本地IP] [机器人IP]
+
+# 示例（使用默认IP）
+./cmake_build/bin/rl_real_d1 192.168.234.2 192.168.234.1
 ```
 
 </details>

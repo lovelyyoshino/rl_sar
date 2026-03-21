@@ -315,6 +315,24 @@ if($ENV{ROS_DISTRO} MATCHES "foxy|humble")
     )
     endif()
 endif()
+
+# Agibot D1 SDK (zsl-1)
+if(SYSTEM_TYPE STREQUAL "Linux")
+    add_library(agibot_d1_sdk SHARED IMPORTED)
+    set_target_properties(agibot_d1_sdk PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/library/thirdparty/robot_sdk/agibot/agibot_D1_Edu-Ultra/include"
+        IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/library/thirdparty/robot_sdk/agibot/agibot_D1_Edu-Ultra/lib/zsl-1/${ARCH_DIR}/libmc_sdk_zsl_1_${ARCH_DIR}.so"
+    )
+    set(AGIBOT_D1_LIBS Threads::Threads agibot_d1_sdk)
+    if($ENV{ROS_DISTRO} MATCHES "foxy|humble")
+        file(GLOB GLOB_AGIBOT_D1_SDK_SO "${CMAKE_CURRENT_SOURCE_DIR}/library/thirdparty/robot_sdk/agibot/agibot_D1_Edu-Ultra/lib/zsl-1/${ARCH_DIR}/libmc_sdk_zsl_1_${ARCH_DIR}.so")
+        install(FILES
+            ${GLOB_AGIBOT_D1_SDK_SO}
+            DESTINATION lib/
+        )
+    endif()
+endif()
+
 # Retroid Gamepad
 if(SYSTEM_TYPE STREQUAL "Linux")
 set(GAMEPAD_SRC
@@ -544,6 +562,32 @@ if(SYSTEM_TYPE STREQUAL "Linux")
                 geometry_msgs
             )
             install(TARGETS rl_real_l4w4 DESTINATION lib/${PROJECT_NAME})
+        endif()
+    endif()
+endif()
+
+# executable for rl real d1
+if(SYSTEM_TYPE STREQUAL "Linux")
+    add_executable(rl_real_d1 src/rl_real_d1.cpp)
+    target_link_libraries(rl_real_d1
+        ${AGIBOT_D1_LIBS}
+        rl_sdk
+        observation_buffer
+        ${YAML_CPP_LIBRARIES}
+    )
+    # Add D1 SDK library path to RPATH
+    set_target_properties(rl_real_d1 PROPERTIES
+        INSTALL_RPATH "${CMAKE_INSTALL_RPATH};${CMAKE_CURRENT_SOURCE_DIR}/library/thirdparty/robot_sdk/agibot/agibot_D1_Edu-Ultra/lib/zsl-1/${ARCH_DIR}"
+    )
+    if(NOT USE_CMAKE)
+        if($ENV{ROS_DISTRO} MATCHES "noetic")
+            target_link_libraries(rl_real_d1 ${catkin_LIBRARIES})
+        elseif($ENV{ROS_DISTRO} MATCHES "foxy|humble")
+            ament_target_dependencies(rl_real_d1
+                rclcpp
+                geometry_msgs
+            )
+            install(TARGETS rl_real_d1 DESTINATION lib/${PROJECT_NAME})
         endif()
     endif()
 endif()
