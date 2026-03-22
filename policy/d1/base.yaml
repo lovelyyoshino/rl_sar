@@ -1,9 +1,29 @@
 # Copyright (c) 2024-2025 rl_sar
 # SPDX-License-Identifier: Apache-2.0
 
-d1:
-  dt: 0.005
-  decimation: 4
+d1/robot_lab:
+  model_name: "policy.pt"
+  num_observations: 45
+  observations: ["ang_vel", "gravity_vec", "commands", "dof_pos", "dof_vel", "actions"]
+  observations_history: []
+  observations_history_priority: "time"
+  clip_obs: 100.0
+  clip_actions_lower: [-1.6, -1.6, -1.6,
+                       -1.6, -1.6, -1.6,
+                       -1.6, -1.6, -1.6,
+                       -1.6, -1.6, -1.6]
+  clip_actions_upper: [1.6, 1.6, 1.6,
+                       1.6, 1.6, 1.6,
+                       1.6, 1.6, 1.6,
+                       1.6, 1.6, 1.6]
+  rl_kp: [18.0, 24.0, 24.0,
+          18.0, 24.0, 24.0,
+          18.0, 24.0, 24.0,
+          18.0, 24.0, 24.0]
+  rl_kd: [1.8, 2.0, 1.8,
+          1.8, 2.0, 1.8,
+          1.8, 2.0, 1.8,
+          1.8, 2.0, 1.8]
   fixed_kp: [80.0, 80.0, 80.0,
              80.0, 80.0, 80.0,
              80.0, 80.0, 80.0,
@@ -13,7 +33,16 @@ d1:
              3.0, 3.0, 3.0,
              3.0, 3.0, 3.0]
   num_of_dofs: 12
+  action_scale: [0.05, 0.22, 0.24,
+                 0.05, 0.22, 0.24,
+                 0.05, 0.22, 0.24,
+                 0.05, 0.22, 0.24]
   wheel_indices: []
+  lin_vel_scale: 2.0
+  ang_vel_scale: 0.25
+  dof_pos_scale: 1.0
+  dof_vel_scale: 0.05
+  commands_scale: [1.0, 1.0, 1.0]
   torque_limits: [33.5, 33.5, 33.5,
                   33.5, 33.5, 33.5,
                   33.5, 33.5, 33.5,
@@ -22,12 +51,4 @@ d1:
                      0.00, 0.80, -1.50,
                      0.00, 0.80, -1.50,
                      0.00, 0.80, -1.50]
-  joint_names: ["FR_ABAD_JOINT", "FR_HIP_JOINT", "FR_KNEE_JOINT",
-                "FL_ABAD_JOINT", "FL_HIP_JOINT", "FL_KNEE_JOINT",
-                "RR_ABAD_JOINT", "RR_HIP_JOINT", "RR_KNEE_JOINT",
-                "RL_ABAD_JOINT", "RL_HIP_JOINT", "RL_KNEE_JOINT"]
-  joint_controller_names: ["FR_ABAD_controller", "FR_HIP_controller", "FR_KNEE_controller",
-                           "FL_ABAD_controller", "FL_HIP_controller", "FL_KNEE_controller",
-                           "RR_ABAD_controller", "RR_HIP_controller", "RR_KNEE_controller",
-                           "RL_ABAD_controller", "RL_HIP_controller", "RL_KNEE_controller"]
   joint_mapping: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
