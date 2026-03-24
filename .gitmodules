@@ -13,3 +13,6 @@
 [submodule "src/rl_sar/library/thirdparty/joystick"]
 	path = src/rl_sar/library/thirdparty/joystick
 	url = https://github.com/drewnoakes/joystick.git
+[submodule "src/rl_sar/library/thirdparty/robot_sdk/agibot/agibot_D1_Edu-Ultra"]
+	path = src/rl_sar/library/thirdparty/robot_sdk/agibot/agibot_D1_Edu-Ultra
+	url = https://github.com/AgibotTech/agibot_D1_Edu-Ultra.git
